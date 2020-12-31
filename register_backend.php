@@ -89,7 +89,7 @@
 
 		if(mysqli_query($connect, $sql))
 		{
-			echo "Successfully Registered";
+			echo "<div width='100%' style='color:grey;font-size:42px;text-align:center'>Successfully Registered "."<a href='index.php'>Log In</a></div>";
 		}
 		else
 		{

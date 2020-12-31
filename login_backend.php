@@ -23,7 +23,6 @@ $connect;
 		$sql = "SELECT * FROM teachers WHERE username = '$username' AND password = '$password'";
 		$result = mysqli_query($connect,$sql);
 		$count = mysqli_num_rows($result);
-
 		if($count == 1)
 		{
 			$rows = mysqli_fetch_assoc($result);

@@ -41,20 +41,20 @@
 		global $course_id, $student_name, $student_id, $teacher_id, $class_test, $final_term;
 		global $connect;
 
-		$sql1 = "INSERT INTO students VALUES(' ','$student_name','$student_id')";
+		$sql1 = "INSERT INTO students VALUES(' ','$student_id','$student_name')";
 		$sql2 = "INSERT INTO course_marks VALUES(' ','$course_id','$student_id','$teacher_id','$class_test','$final_term')";
 
 		if(mysqli_query($connect, $sql1))
 		{
-			echo "Successfully Inserted";
-		}
-		else
-		{
-			echo "Something Went Wrong ".mysqli_error($connect);
-		}
-		if(mysqli_query($connect, $sql2))
-		{
-			echo "Successfully Inserted";
+		
+			if(mysqli_query($connect, $sql2))
+			{
+				echo "<div width='100%' style='color:grey;font-size:42px;text-align:center'>Successfully Inserted "."<a href='submit_marks.php'>Continue</a></div>";
+			}
+			else
+			{
+				echo "Something Went Wrong ".mysqli_error($connect);
+			}
 		}
 		else
 		{

@@ -23,7 +23,7 @@
 		}
 		function retrieve_data()
 		{
-			$query = "SELECT * FROM course_marks GROUP BY student_id";
+			$query = "SELECT * FROM course_marks";
 			global $connect, $result, $rows;
 
 			$result = mysqli_query($connect,$query);
@@ -97,44 +97,52 @@
     			</thead>
     			<tbody>
     				<?php 
-    				$i = 0; $student_arr = []; $course_arr = [];
+    				$i = 0; $student_arr = []; $course_arr = []; $c = 0;
     					while($row = mysqli_fetch_assoc($result))
     					{ 
     						$student_id = $row['student_id'];
     						$course_id = $row['course_id'];
 
-    						if(in_array($student_id, $student_arr) and in_array($course_id, $course_arr))
-    						{
-
-    						}
+    						if( in_array($student_id, $student_arr) and (array_search($student_id, $student_arr) == array_search($course_id, $course_arr)))
+                {
+                }
     						else
     						{
     							$total_marks = 0;
-    							$marks_query = "SELECT (class_test+final_term) as t_m FROM course_marks WHERE student_id = $student_id AND course_id = $course_id";
+    							$marks_query = "SELECT (class_test+final_term) as t_m FROM course_marks WHERE student_id = '$student_id' AND course_id = $course_id";
     							$teacher_marks = []; $n = 0;
     							$marks_result = mysqli_query($connect,$marks_query);
     							while($rowm = mysqli_fetch_assoc($marks_result))
     							{
     								$teacher_marks[$n] = $rowm['t_m'];
     								$n++;
+                    $total_marks = $total_marks + $rowm['t_m'];
+                    $student_arr[$i] = $student_id; 
+                    $course_arr[$i] = $course_id; 
+                    $i++;
     							}
-    							$course_query = "SELECT sum(class_test) as class_test_total, sum(final_term) as final_term_total FROM course_marks WHERE student_id = $student_id AND course_id = '$course_id' GROUP BY student_id ";
-    							$course_result = mysqli_query($connect,$course_query);
-    							while($rowc = mysqli_fetch_assoc($course_result))
-    							{
-    								$class_test_total = $rowc['class_test_total'];
-    								$final_term_total = $rowc['final_term_total'];
+    							// $course_query = "SELECT sum(class_test) as class_test_total, sum(final_term) as final_term_total FROM course_marks WHERE student_id = '$student_id' AND course_id = $course_id GROUP BY student_id ";
+    							// $course_result = mysqli_query($connect,$course_query);
+    							// while($rowc = mysqli_fetch_assoc($course_result))
+    							// {
+    							// 	$class_test_total = $rowc['class_test_total'];
+    							// 	$final_term_total = $rowc['final_term_total'];
 
-    								$total_marks = $total_marks + $class_test_total + $final_term_total;
-    								$student_arr[$i] = $student_id; 
-    								$course_arr[$i] = $course_id; 
+    							// 	$total_marks = $total_marks + $class_test_total + $final_term_total;
+    							// 	$student_arr[$i] = $student_id; 
+    							// 	$course_arr[$i] = $course_id; 
     							
-    								$i++;
-    							}
-    							$avg_marks = $total_marks/2; 
+    							// 	$i++;
+    							// }
+                  $avg_marks = "Examining Task Incomplete";
+                  $deviation_flag = false;
+                  if($n >= 2)
+                  {
+                    
+    							  $avg_marks = $total_marks/2; 
 
-    							$first_num_diff = $avg_marks - $teacher_marks[0];
-    							$second_num_diff = $avg_marks - $teacher_marks[1];
+    							  $first_num_diff = $avg_marks - $teacher_marks[0];
+    							  $second_num_diff = $avg_marks - $teacher_marks[1];
     								if($first_num_diff < 0)
     								{
     									$first_num_diff = $first_num_diff * (-1);
@@ -150,19 +158,17 @@
     								{
     									$deviation_flag = true;
     								}
-    								else
-    								{
-    									$deviation_flag = false;
-    								}
-    							?>						
+                  }
+    						?>						
     				<tr>
     					<td><?php echo $student_id; ?></td>
     					<td><?php if($course_id == 1){echo 'MIT001';}else if($course_id == 2){echo 'MIT002';} else if($course_id == 3){echo 'MIT003';} ?></td>
-    					<td><?php if($deviation_flag == true){echo "Marks deviated more than 20%. Result will not generate.";}else{echo $total_marks/2;} ?></td>
-    					<td><button type="button" id="btn_set_values" class="btn-sm btn-success" data-toggle="modal" data-target="#exampleModalCenter" data-student-id = <?php echo $student_id; ?> data-course-id = <?php echo $course_id; ?> data-teacher-id = <?php echo $course_id; ?> onclick="set_values();">Submit Marks</button></td>
+    					<td><?php if($deviation_flag == true){echo "Marks deviated more than 20%. Result will not generate.";}else{echo $avg_marks;} ?></td>
+    					<td><button type="button" id=<?php echo"btn_set_values".$c; ?> class="btn-sm btn-success" data-toggle="modal" data-target="#exampleModalCenter" data-student-id = <?php echo $student_id; ?> data-course-id = <?php echo $course_id; ?> data-teacher-id = <?php echo $_SESSION['id_webtech']; ?> onclick="set_values(this.id);">Submit Marks</button></td>
     				</tr>
     				<?php
-    						}
+                $c++;
+                }
     				 	} 
     				?>
     			</tbody>
@@ -202,11 +208,11 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js">
 </script>
 <script type="text/javascript">
-	function set_values()
+	function set_values(id)
 	{
-		$('#id_course').val($('#btn_set_values').attr('data-course-id'));
-		$('#id_teacher').val($('#btn_set_values').attr('data-teacher-id'));
-		$('#id_student').val($('#btn_set_values').attr('data-student-id'));
+		$('#id_course').val($('#'+id).attr('data-course-id'));
+		$('#id_teacher').val($('#'+id).attr('data-teacher-id'));
+		$('#id_student').val($('#'+id).attr('data-student-id'));
 	}
 
 </script>
