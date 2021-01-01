@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 29, 2020 at 05:05 PM
+-- Generation Time: Jan 01, 2021 at 08:41 AM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.4
 
@@ -30,7 +30,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `course_marks` (
   `id` int(11) NOT NULL,
   `course_id` int(11) NOT NULL,
-  `student_id` int(11) NOT NULL,
+  `student_id` varchar(255) DEFAULT NULL,
   `teacher_id` int(11) NOT NULL,
   `class_test` int(11) NOT NULL,
   `final_term` int(11) NOT NULL
@@ -41,8 +41,10 @@ CREATE TABLE `course_marks` (
 --
 
 INSERT INTO `course_marks` (`id`, `course_id`, `student_id`, `teacher_id`, `class_test`, `final_term`) VALUES
-(2, 2, 1222222, 1, 30, 40),
-(5, 2, 1222222, 2, 20, 20);
+(31, 1, '12-21265-2', 19, 30, 50),
+(32, 1, '12-21265-2', 20, 32, 52),
+(33, 2, '12-21258-2', 20, 20, 20),
+(34, 2, '12-21258-2', 19, 30, 40);
 
 -- --------------------------------------------------------
 
@@ -61,11 +63,10 @@ CREATE TABLE `students` (
 --
 
 INSERT INTO `students` (`id`, `student_id`, `student_name`) VALUES
-(1, '', ''),
-(2, 'Arifur Rahman', '1222222'),
-(3, '', '2'),
-(4, '', '2'),
-(5, '', '1222222');
+(31, '12-21265-2', 'Md. Monsur Ali'),
+(32, '12-21265-2', ''),
+(33, '12-21258-2', 'Syed Ali Afsar'),
+(34, '12-21258-2', '');
 
 -- --------------------------------------------------------
 
@@ -81,6 +82,14 @@ CREATE TABLE `teachers` (
   `password` varchar(1000) NOT NULL,
   `phone` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `teachers`
+--
+
+INSERT INTO `teachers` (`id`, `first_name`, `last_name`, `username`, `password`, `phone`) VALUES
+(19, 'Md. Arifur', 'Rahman', 'arif.rahman', 'fa585d89c851dd338a70dcf535aa2a92fee7836dd6aff1226583e88e0996293f16bc009c652826e0fc5c706695a03cddce372f139eff4d13959da6f1f5d3eabe', '01921299300'),
+(20, 'Abdullah Al', 'Foysal', 'foysal.fuad', 'fa585d89c851dd338a70dcf535aa2a92fee7836dd6aff1226583e88e0996293f16bc009c652826e0fc5c706695a03cddce372f139eff4d13959da6f1f5d3eabe', '01727226289');
 
 --
 -- Indexes for dumped tables
@@ -112,19 +121,19 @@ ALTER TABLE `teachers`
 -- AUTO_INCREMENT for table `course_marks`
 --
 ALTER TABLE `course_marks`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT for table `students`
 --
 ALTER TABLE `students`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT for table `teachers`
 --
 ALTER TABLE `teachers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
